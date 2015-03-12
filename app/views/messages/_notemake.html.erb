@@ -1,0 +1,5 @@
+<%= f.fields_for :note, Note.new do |note| %>
+ <%= note.label "Note" %>
+ <br />
+ <%= note.text_area :content %>
+<% end %>

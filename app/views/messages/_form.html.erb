@@ -1,0 +1,19 @@
+<%= form_for(@message) do |f| %>
+  <%= f.label :send_to %>
+  <%= f.collection_select :office, Office.all, :name, :name, 
+       :include_blank => false, multiple: true %>
+  <br />
+  <%= f.label :subject %>
+  <%= f.text_field :subject %>
+  <br />
+  <%= f.label :attachment %>
+  <%= f.file_field :avatars, multiple: true %>
+  <br />
+  <%= f.fields_for :notes, Note.new do |note| %>
+  <%= render 'notemake', f: note %>
+  <% end %>
+  <br />
+  <div class="actions">
+    <%= f.submit "Send Message" %>
+  </div>
+<% end %>
