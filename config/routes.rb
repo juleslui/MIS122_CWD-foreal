@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   devise_for :users
 
+  resources :users
+
   get '/' => 'messages#index'
   get '/manage' => 'users#index'
   get '/compose' => 'messages#new'
@@ -17,9 +19,9 @@ Rails.application.routes.draw do
   get 'users/:id/restore' => 'users#restore', :as => 'restore_user'
   get 'users/:id/terminate' => 'users#terminate', :as => 'terminate_user'
   get 'messages/:id/history' => 'messages#history', :as => 'history_message'
+  match 'messages/:id/forward' => 'messages#forward', :as => 'forward_message', via: [:get, :post]
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 

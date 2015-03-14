@@ -1,21 +1,16 @@
-<%= form_for(@message) do |f| %>
+<h1>Forwarding Message</h1>
+
+<%= form_for(@message, url: {action: forward_message}) do |f| %>
   <%= f.label :send_to %>
   <%= f.collection_select :office, Office.all, :id, :name %>
   <br />
-  <%= f.label :subject %>
-  <%= f.text_field :subject %>
-  <br />
   <%= f.fields_for :notes, Note.new do |note| %>
-    <%= note.label :attachment %>
-    <%= note.file_field :attachment, multiple: true %>
-  <br />
-  
     <%= note.label "Note" %>
     <br />
     <%= note.text_area :content %>
   <% end %>
   <br />
   <div class="actions">
-    <%= f.submit "Send Message" %>
+    <%= f.submit "Forward Message" %>
   </div>
 <% end %>

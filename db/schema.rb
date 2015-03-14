@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150312073014) do
+ActiveRecord::Schema.define(version: 20150314113938) do
 
   create_table "mailboxer_conversation_opt_outs", force: :cascade do |t|
     t.integer "unsubscriber_id",   limit: 4
@@ -63,19 +63,17 @@ ActiveRecord::Schema.define(version: 20150312073014) do
   add_index "mailboxer_receipts", ["notification_id"], name: "index_mailboxer_receipts_on_notification_id", using: :btree
 
   create_table "messages", force: :cascade do |t|
-    t.integer  "user_id",       limit: 4
     t.string   "sent_to",       limit: 255
     t.datetime "date_sent"
     t.string   "subject",       limit: 255
     t.datetime "deadline"
     t.string   "received_from", limit: 255
-    t.string   "attachment",    limit: 255
     t.string   "send_to",       limit: 255
     t.datetime "time_elapsed"
     t.datetime "date_received"
-    t.string   "avatars",       limit: 255
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+    t.integer  "office_id",     limit: 4
   end
 
   create_table "notes", force: :cascade do |t|

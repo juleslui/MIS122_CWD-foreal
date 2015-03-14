@@ -15,6 +15,8 @@ class MessagesController < ApplicationController
   # GET /messages/1.json
   def show
     @message = Message.find(params[:id])
+    puts @message, @message.notes
+    @message
   end
 
   # GET /messages/new
@@ -26,13 +28,44 @@ class MessagesController < ApplicationController
   def edit
   end
 
+  def forward
+    @message = Message.find(params[:id])
+  end
+
   # POST /messages
   # POST /messages.json
   def create
-    if params[:send_to].present?
-    @message = Message.new(message_params)
-    @message.save
-    current_user.send_message(User.find(params[:send_to]), params[:subject])
+    # puts "MEssage PArams:", message_params
+    # office = Office.find_by_name(params[:office])
+    # puts "Office:", office
+    puts message_params
+    puts "WHAT IS WRONG WITCHU", message_params[:attachment]
+
+    @message = Message.new({
+      received_from: current_user.office.name,
+      office: Office.find(message_params[:office]), 
+      subject: message_params[:subject]
+    })
+
+    # uploader = AttacherUploader.new
+    # uploader.store!(message_params[:attachment])
+
+    @note = Note.new(
+      {
+        user: current_user,
+        message: @message,
+        content: message_params[:notes_attributes]["0"][:content]
+      }
+    )
+    @note.save
+
+    message_params[:notes_attributes]["0"][:attachment].each do |raw|
+      @attachment = Attachment.new({note: @note})
+      @attachment.file = raw
+      @attachment.save!
+    end
+
+    current_user.send_message(current_user, "Some content", message_params[:subject])
     respond_to do |format|
       if @message.save
         format.html { redirect_to @message, notice: 'Message was successfully created.' }
@@ -41,7 +74,6 @@ class MessagesController < ApplicationController
         format.html { render :new }
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end
-    redirect_to '/'
     end
   end
 
@@ -70,14 +102,17 @@ class MessagesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_message
-      @message = Message.find(params[:id])
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def message_params
-      params[:message]
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_message
+    @message = Message.find(params[:id])
   end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def message_params
+    params.require(:message).permit(:office, :subject, notes_attributes: [:content, :attachment=>[]])
+  end
+
+  # def note_params
+  #   params.require(:message).permit(:attachment)
+  # end
 end

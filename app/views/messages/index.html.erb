@@ -28,7 +28,7 @@
         <td>Countdown lang po dito ser</td>
         <td><%= message.date_received %></td>
         <td><%= message.received_from %></td>
-        <td><%= message.subject %></td>
+        <td><%= link_to message.subject, message %></td>
         <td><%= link_to 'Delete', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
       <% end %>

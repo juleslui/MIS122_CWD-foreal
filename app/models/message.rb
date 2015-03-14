@@ -1,5 +1,6 @@
 class Message < ActiveRecord::Base
 	belongs_to :office
 	has_many :notes
-	mount_uploader :avatars, AttacherUploader
+	has_many :attachments, :through => :notes
+	accepts_nested_attributes_for :notes
 end
