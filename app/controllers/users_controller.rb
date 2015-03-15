@@ -1,10 +1,13 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+  before_action :authenticate_user!
   # GET /users
   # GET /users.json
   def index
     @users = User.all
+    @disableds = @users.select { |user| user.status == 'DISABLED' }
+    @okays = @users.select { |user| user.status == 'OK' }
+    @terminateds = @users.select { |user| user.status == 'TERMINATED' }
   end
 
   # GET /users/1
@@ -14,21 +17,21 @@ class UsersController < ApplicationController
   end
 
   def disable
-    @status = User.getStatus
     @user = User.find(params[:id])
-    @user.update_attribute(:status, "disabled")
+    @status = @user.status
+    @user.update_attribute(:status, "DISABLED")
     redirect_to "/manage"
   end 
 
   def terminate
     @user = User.find(params[:id])
-    @user.update_attribute(:status, "terminated")
+    @user.update_attribute(:status, "TERMINATED")
     redirect_to "/manage"
   end 
 
   def restore
-    @status = User.getStatus
     @user = User.find(params[:id])
+    @status = @user.status
     @user.update_attribute(:status, "OK")
     redirect_to "/manage"
   end 

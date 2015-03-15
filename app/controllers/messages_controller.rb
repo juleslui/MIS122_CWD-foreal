@@ -32,6 +32,11 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id])
   end
 
+  def forward
+    @message.updates(message_params)
+    current_user.send_message(current_user, "Some content", message_params[:subject])
+  end
+
   # POST /messages
   # POST /messages.json
   def create
@@ -65,10 +70,16 @@ class MessagesController < ApplicationController
       @attachment.save!
     end
 
+    @revision = Revision.new({
+      message: @message,
+      received_from: current_user.office.name,
+      sent_to: Office.find(message_params[:office]).name
+      })
+
     current_user.send_message(current_user, "Some content", message_params[:subject])
     respond_to do |format|
       if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully created.' }
+        format.html { redirect_to '/', notice: 'Message was successfully created.' }
         format.json { render :show, status: :created, location: @message }
       else
         format.html { render :new }

@@ -11,7 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150314113938) do
+ActiveRecord::Schema.define(version: 20150315104033) do
+
+  create_table "attachments", force: :cascade do |t|
+    t.integer "note_id", limit: 4
+    t.string  "file",    limit: 255
+  end
 
   create_table "mailboxer_conversation_opt_outs", force: :cascade do |t|
     t.integer "unsubscriber_id",   limit: 4
@@ -71,9 +76,10 @@ ActiveRecord::Schema.define(version: 20150314113938) do
     t.string   "send_to",       limit: 255
     t.datetime "time_elapsed"
     t.datetime "date_received"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.integer  "office_id",     limit: 4
+    t.string   "status",        limit: 255, default: "OPEN"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -90,6 +96,17 @@ ActiveRecord::Schema.define(version: 20150314113938) do
     t.string   "email",      limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  create_table "revisions", force: :cascade do |t|
+    t.integer  "message_id",    limit: 4
+    t.string   "received_from", limit: 255
+    t.datetime "time_sent"
+    t.datetime "time_elapsed"
+    t.string   "sent_to",       limit: 255
+    t.string   "attachment",    limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "users", force: :cascade do |t|

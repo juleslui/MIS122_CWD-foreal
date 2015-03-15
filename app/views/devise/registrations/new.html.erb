@@ -48,7 +48,7 @@
 
   <div class="field">
   <%= f.label :office %>
-  <%= f.collection_select :office, Office.all, :name, :name %>
+  <%= f.collection_select :office_id, Office.all, :id, :name %>
   </div>
 
   <div class="actions">

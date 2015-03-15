@@ -43,16 +43,10 @@
   </div>
 
   <div class="field">
-  <%= f.label :office_name %>
-  <%= f.collection_select :name, Office.all, :to_s, :to_s, 
-       :include_blank => false, html: { multipart: true } %>
+  <%= f.label :office %>
+  <%= f.collection_select :office, Office.all, :name, :name %>
   </div>
-
   
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
   <% if @user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>

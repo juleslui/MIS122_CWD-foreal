@@ -1,4 +1,16 @@
 <p id="notice"><%= notice %></p>
+<h1><%= @user.last_name %>, <%= @user.first_name %> <%= @user.middle_initial %></h1>
+
+
+<p>From: <%= @user.email %></p>
+<p>Office: <%= @user.office.name %></p>
+<% if @user.admin_check == true %>
+<p>Access level: Administrator</p>
+<% else %>
+<p>Access level: Regular User</p>
+<% end %>
+<br />
+<p>Status: <%= @user.status %></p>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>

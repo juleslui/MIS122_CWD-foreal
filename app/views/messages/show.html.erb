@@ -30,12 +30,11 @@
 <% end %>
 </ul
 
-<%= link_to 'View History', history_message_path(@message) %>
 <% if current_user.admin_check == true %>
+<%= link_to 'View History', history_message_path(@message) %>
 <%= link_to 'Close/Unclose', edit_user_path(@message) %>
 <% end %> |
-<%= link_to 'Forward', forward_message_path(@message) %>
-<%= link_to 'Reply (WP)', users_path %>
+<%= link_to 'Reply', forward_message_path(@message) %>
 <% else %>
   <li>
   <%= link_to('Register', new_user_registration_path)  %>

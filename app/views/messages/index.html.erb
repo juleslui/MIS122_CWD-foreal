@@ -1,6 +1,9 @@
 <% if user_signed_in? %>
 <p>Welcome, <%= current_user.first_name %> <%= current_user.last_name %></p>
   <li>
+  <%= link_to('Home', '/') %>
+  </li>
+  <li>
   <%= link_to('Edit registration', edit_user_registration_path) %>
   </li>
   <% if current_user.admin_check == true %>
@@ -26,7 +29,7 @@
       <% @messages.each do |message| %>
       <tr>
         <td>Countdown lang po dito ser</td>
-        <td><%= message.date_received %></td>
+        <td><%= message.created_at %></td>
         <td><%= message.received_from %></td>
         <td><%= link_to message.subject, message %></td>
         <td><%= link_to 'Delete', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
