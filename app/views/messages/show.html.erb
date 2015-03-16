@@ -32,7 +32,11 @@
 
 <% if current_user.admin_check == true %>
 <%= link_to 'View History', history_message_path(@message) %>
-<%= link_to 'Close/Unclose', edit_user_path(@message) %>
+<% if @message.status == "OPEN" %>
+<%= link_to 'Close', close_message_path(@message) %>
+<% else %>
+<%= link_to 'Unclose', unclose_message_path(@message) %>
+<% end %>
 <% end %> |
 <%= link_to 'Reply', forward_message_path(@message) %>
 <% else %>

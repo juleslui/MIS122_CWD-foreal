@@ -1,0 +1,47 @@
+<% if user_signed_in? %>
+<p>Welcome, <%= current_user.first_name %> <%= current_user.last_name %></p>
+  <li>
+  <%= link_to('Home', '/') %>
+  </li>
+  <li>
+  <%= link_to('Edit registration', edit_user_registration_path) %>
+  </li>
+  <% if current_user.admin_check == true %>
+  <li>
+    <%= link_to('Manage Users', '/manage') %>
+  </li>
+  <% end %>
+  <li>
+  <%= link_to('Logout', destroy_user_session_path, :method => :delete) %> 
+  </li>
+  <li>
+  <%= link_to('Compose', '/compose') %>
+  </li>
+  <h1> CONTROL ID Message History </h1>
+  <body>
+    <table>
+      <tr>
+        <th>From</th>
+        <th>Time Sent</th>
+        <th>Sent To</th>
+        <th>Time Elapsed</th>
+      </tr>
+      <% @revisions.each do |message| %>
+      <tr>
+        <td><%= message.received_from %></td>
+        <td><%= message.created_at %></td>
+        <td><%= message.sent_to %></td>
+        <td>Time Elapsed here</td>
+        <td><%= link_to 'Delete', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+      <% end %>
+    </table>
+
+<% else %>
+  <li>
+  <%= link_to('Register', new_user_registration_path)  %>
+  </li>
+  <li>
+  <%= link_to('Login', new_user_session_path)  %>  
+  </li>
+<% end %>

@@ -7,9 +7,21 @@ class MessagesController < ApplicationController
     if current_user.admin_check == true
       @messages = Message.all
     else
-      @messages = current_user.mailbox.inbox
+      @messages = current_user.office.mailbox.inbox
     end
   end
+
+  def close
+    @message = Message.find(params[:id])
+    @message.update_attribute(:status, "CLOSED")
+    redirect_to @message
+  end 
+
+  def unclose
+    @message = Message.find(params[:id])
+    @message.update_attribute(:status, "OPEN")
+    redirect_to @message
+  end 
 
   # GET /messages/1
   # GET /messages/1.json
@@ -33,15 +45,16 @@ class MessagesController < ApplicationController
   end
 
   def forward
+    office = Office.find(message_params[:office])
     @message.updates(message_params)
-    current_user.send_message(current_user, "Some content", message_params[:subject])
+    current_user.send_message(@office, "Some content", message_params[:subject])
   end
 
   # POST /messages
   # POST /messages.json
   def create
     # puts "MEssage PArams:", message_params
-    # office = Office.find_by_name(params[:office])
+    office = Office.find(message_params[:office])
     # puts "Office:", office
     puts message_params
     puts "WHAT IS WRONG WITCHU", message_params[:attachment]
@@ -76,7 +89,7 @@ class MessagesController < ApplicationController
       sent_to: Office.find(message_params[:office]).name
       })
 
-    current_user.send_message(current_user, "Some content", message_params[:subject])
+    current_user.send_message(office, "Some content", message_params[:subject])
     respond_to do |format|
       if @message.save
         format.html { redirect_to '/', notice: 'Message was successfully created.' }

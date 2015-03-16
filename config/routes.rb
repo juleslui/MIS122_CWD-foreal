@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   get 'users/:id/terminate' => 'users#terminate', :as => 'terminate_user'
   get 'messages/:id/history' => 'messages#history', :as => 'history_message'
   match 'messages/:id/forward' => 'messages#forward', :as => 'forward_message', via: [:get, :post]
+  get 'messages/:id/close' => 'messages#close', :as => 'close_message'
+  get 'messages/:id/unclose' => 'messages#unclose', :as => 'unclose_message'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
   # You can have the root of your site routed with "root"
