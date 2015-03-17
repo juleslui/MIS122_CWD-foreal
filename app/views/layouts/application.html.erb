@@ -3,12 +3,29 @@
 <head>
   <title>MIS122CWD</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <style>
+    .main {
+      position: relative;
+    }
+
+    .main table {
+      text-align: left;
+    }
+
+    .main .full-width-table {
+      width: 100%;
+    }
+
+    .main .message:nth-child(even) {
+      background: lightgray;
+    }
+  </style>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
-
+  <div class='main'>
+    <%= yield %>
+  </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 class MessagesController < ApplicationController
-  before_action :set_message, only: [:show, :edit, :update, :destroy]
+  before_action :set_convo, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!
   # GET /messages
   # GET /messages.json
@@ -7,7 +7,7 @@ class MessagesController < ApplicationController
     # if current_user.admin_check == true
     #   @messages = Message.all
     # else
-      @messages = current_user.office.mailbox.inbox
+    @mailbox = current_user.office.mailbox
     # end
   end
 
@@ -19,20 +19,18 @@ class MessagesController < ApplicationController
     @message = Message.find(params[:id])
     @message.update_attribute(:status, "CLOSED")
     redirect_to @message
-  end 
+  end
 
   def unclose
     @message = Message.find(params[:id])
     @message.update_attribute(:status, "OPEN")
     redirect_to @message
-  end 
+  end
 
   # GET /messages/1
   # GET /messages/1.json
   def show
-    @message = Message.find(params[:id])
-    puts @message, @message.notes
-    @message
+    @convo
   end
 
   # GET /messages/new
@@ -63,62 +61,22 @@ class MessagesController < ApplicationController
   # POST /messages
   # POST /messages.json
   def create
-    # puts "MEssage PArams:", message_params
-    # office = Office.find(message_params[:office])
-    # puts "Office:", office
-    # puts message_params
-    # puts "WHAT IS WRONG WITCHU", message_params[:attachment]
-
-    # @message = Message.new({
+    puts "Attachment!", message_params[:notes_attributes]["0"][:attachment]
+    current_user.office.send_message(Office.find(message_params[:office]),
+                              message_params[:notes_attributes]["0"][:content],
+                              message_params[:subject],
+                              sanitize_text=true,
+                              attachment=message_params[:notes_attributes]["0"][:attachment])
+    # After sending message, track the revision
+    # @revision = Revision.new({
     #   received_from: current_user.office.name,
-    #   office: Office.find(message_params[:office]), 
-    #   subject: message_params[:subject]
-    # })
+    #   sent_to: Office.find.(message_params[:office]).name,
+    #   attachment: @attachment,
+    #   time_sent: Time.now
+    #   })
+    # @revision.save!
 
-    # uploader = AttacherUploader.new
-    # uploader.store!(message_params[:attachment])
-
-    # @note = Note.new(
-    #   {
-    #     user: current_user,
-    #     message: @message,
-    #     content: message_params[:notes_attributes]["0"][:content]
-    #   }
-    # )
-    # @note.save
-
-    # message_params[:notes_attributes]["0"][:attachment].each do |raw|
-    #   @attachment = Attachment.new({note: @note})
-    #   @attachment.file = raw
-    #   @attachment.save!
-    # end
-    
-    message_params[:notes_attributes]["0"][:attachment].each do |raw|
-      @attachment = Attachment.new
-      @attachment.file = raw
-      @attachment.save!
-    end
-
-    @revision = Revision.new({
-      received_from: current_user.office.name,
-      sent_to: Office.find.(message_params[:office]).name
-      attachment: @attachment
-      time_sent: Time.now
-      })
-
-    @revision.save!
-
-    current_user.send_message(Office.find(message_params[:office]), "Some content", message_params[:subject], true, @attachment, Time.now)
     redirect_to '/'
-    # respond_to do |format|
-    #   if @message.save
-    #     format.html { redirect_to '/', notice: 'Message was successfully created.' }
-    #     format.json { render :show, status: :created, location: @message }
-    #   else
-    #     format.html { render :new }
-    #     format.json { render json: @message.errors, status: :unprocessable_entity }
-    #   end
-    # end
   end
 
   # PATCH/PUT /messages/1
@@ -147,8 +105,8 @@ class MessagesController < ApplicationController
 
   private
   # Use callbacks to share common setup or constraints between actions.
-  def set_message
-    @message = Message.find(params[:id])
+  def set_convo
+    @convo = Mailboxer::Conversation.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

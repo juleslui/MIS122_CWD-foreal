@@ -12,39 +12,54 @@
   </li>
   <% end %>
   <li>
-  <%= link_to('Logout', destroy_user_session_path, :method => :delete) %> 
+  <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>
   </li>
   <li>
   <%= link_to('Compose', '/compose') %>
   </li>
-  <h1> Inbox </h1>
-  <body>
-    <table>
+  <h3> Inbox (<%= @mailbox.inbox.length %>) </h3>
+  <table class='full-width-table'>
+    <tr>
+      <th>Subject</th>
+      <th>From</th>
+      <th>Date Received</th>
+      <th>Time Left</th>
+    </tr>
+    <%- @mailbox.inbox.each do |convo| %>
+      <%= convo %>
       <tr>
-        <th>Time Left</th>
-        <th>Date Received</th>
-        <th>From</th>
-        <th>Subject</th>
+        <td><%= link_to convo.subject, message_path(convo.id) %></td>
+        <td><%= convo.last_sender.name %></td>
+        <td><%= convo.created_at %></td>
+        <td>(Datetime Received + 24) - DatetimeNow</td>
       </tr>
-      <% @messages.each do |message| %>
-        <% @receipts = message.receipts %>
-          <% @receipts.each do |receipt| %> 
-            <tr>
-              <td>Countdown lang po dito ser</td>
-              <td><%= receipt.created_at %></td>
-              <td><%= receipt.message.sender.office.name %></td>
-              <td><%= receipt.message.subject %></td>
-              
-            </tr>
-          <% end %>
-      <% end %>
-    </table>
+    <% end %>
+  </table>
+
+  <h3> Sent (<%= @mailbox.sentbox.length %>) </h3>
+  <table class='full-width-table'>
+    <tr>
+      <th>Subject</th>
+      <th>From</th>
+      <th>Date Received</th>
+      <th>Time Left</th>
+    </tr>
+    <%- @mailbox.sentbox.each do |convo| %>
+      <%= convo %>
+      <tr>
+        <td><%= link_to convo.subject, message_path(convo.id) %></td>
+        <td><%= convo.last_sender.name %></td>
+        <td><%= convo.created_at %></td>
+        <td>(Datetime Received + 24) - DatetimeNow</td>
+      </tr>
+    <% end %>
+  </table>
 
 <% else %>
   <li>
   <%= link_to('Register', new_user_registration_path)  %>
   </li>
   <li>
-  <%= link_to('Login', new_user_session_path)  %>  
+  <%= link_to('Login', new_user_session_path)  %>
   </li>
 <% end %>

@@ -9,42 +9,39 @@
   </li>
   <% end %>
   <li>
-  <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>        
+  <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>
   </li>
 <p id="notice"><%= notice %></p>
-<p>Deadline: <%= @message.deadline %></p>
-<p>From: <%= @message.received_from %></p>
-<p>Subject: <%= @message.subject %></p>
-<p>Attachments</p>
-
-<% @message.notes.each do |note| %>
-  <% note.attachments.each do |attach| %>
-    <%= link_to attach.file.url, attach.file.url %>
-  <% end %>
+<h3><%= @convo.subject %></h3>
+<%- @convo.messages.each do |msg| %>
+  <div class='message'>
+    <div>From: <%= msg.sender.name %></div>
+    <div>Attachments:
+      <ul>
+        <li><%= link_to msg.attachment.identifier, msg.attachment.url %></li>
+      </ul>
+    </div>
+    <div>Body: <%= msg.body %></div>
+  </div>
 <% end %>
 
-<p>Notes</p>
-<ul>
-<% @message.notes.each do |note| %>
-<li><%= note.content %></li>
-<% end %>
-</ul
-
+<div>
 <% if current_user.admin_check == true %>
-<%= link_to 'View History', message_history_path(@message) %> |
+<%= link_to 'View History', message_history_path(@convo) %> |
 <% if @message.status == "OPEN" %>
-<%= link_to 'Close', close_message_path(@message) %>
+<%= link_to 'Close', close_message_path(@convo) %>
 <% else %>
-<%= link_to 'Unclose', unclose_message_path(@message) %>
+<%= link_to 'Unclose', unclose_message_path(@convo) %>
 <% end %>
 <% end %> |
-<%= link_to 'Reply', forward_message_path(@message) %> |
+<%= link_to 'Reply', forward_message_path(@convo) %> |
 <%= link_to 'Back', messages_path %>
 <% else %>
   <li>
   <%= link_to('Register', new_user_registration_path)  %>
   </li>
   <li>
-  <%= link_to('Login', new_user_session_path)  %>  
+  <%= link_to('Login', new_user_session_path)  %>
   </li>
 <% end %>
+</div>
