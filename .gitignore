@@ -12,6 +12,8 @@
 !/log/.keep
 /tmp
 
+.ruby-version
+.ruby-gemset
 public/uploads/
 db/schema.rb
 config/database.yml
