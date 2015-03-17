@@ -28,13 +28,13 @@
 <div>
 <% if current_user.admin_check == true %>
 <%= link_to 'View History', message_history_path(@convo) %> |
-<% if @message.status == "OPEN" %>
+<% if !@convo.is_read?(current_user.office) %>
 <%= link_to 'Close', close_message_path(@convo) %>
 <% else %>
 <%= link_to 'Unclose', unclose_message_path(@convo) %>
 <% end %>
 <% end %> |
-<%= link_to 'Reply', forward_message_path(@convo) %> |
+<%= link_to 'Reply', reply_message_path(@convo) %> |
 <%= link_to 'Back', messages_path %>
 <% else %>
   <li>

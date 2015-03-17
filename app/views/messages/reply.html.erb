@@ -1,0 +1,29 @@
+<h2><%= @convo.subject %></h2>
+<%- last_msg = @convo.last_message %>
+
+<h3>Reply</h3>
+
+<p>
+  Sender: <%= last_msg.sender.name %><br/>
+  Latest Note: <%= last_msg.body %><br/>
+  Attachment: <%= last_msg.attachment.identifier %><br/>
+</p>
+
+<%= form_for(@message, url: reply_message_path(@convo)) do |f| %>
+  <%= f.label :send_to %>:
+  <%- f.collection_select :office, Office.all, :id, :name %>
+  <%= @convo.last_sender.name %>
+  <br />
+  <%= f.fields_for :notes, Note.new do |note| %>
+    <%= note.label :attachment %>
+    <%= note.file_field :attachment, multiple: true %>
+    <br />
+    <%= note.label "Note" %>
+    <br />
+    <%= note.text_area :content %>
+  <% end %>
+  <br />
+  <div class="actions">
+    <%= f.submit "Forward Message" %>
+  </div>
+<% end %>

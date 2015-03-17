@@ -1,5 +1,5 @@
 class MessagesController < ApplicationController
-  before_action :set_convo, only: [:show, :edit, :update, :destroy]
+  before_action :set_convo, only: [:reply, :show, :edit, :update, :destroy]
   before_action :authenticate_user!
   # GET /messages
   # GET /messages.json
@@ -42,26 +42,34 @@ class MessagesController < ApplicationController
   def edit
   end
 
-  def forward
-    @message = Message.find(params[:id])
-  end
-
-  def forward
-    office = Office.find(message_params[:office])
-    @message.updates(message_params)
-    @revision = Revision.new({
-      message: @message,
-      received_from: current_user.office.name,
-      sent_to: Office.find(message_params[:office]).name
-      })
-    @revision.save!
-    current_user.send_message(@office, "Some content", message_params[:subject])
+  def reply
+    if request.get?
+      @message = Message.new
+      puts "GET"
+    else
+      @message = Message.new
+      puts "REPLY!!", message_params[:notes_attributes]["0"][:content]
+      puts "ATTACH!", attachment=message_params[:notes_attributes]["0"][:attachment]
+      puts "current office!", current_user.office.name
+      current_user.office.reply_to_conversation(@convo,
+                          message_params[:notes_attributes]["0"][:content],
+                          attachment=message_params[:notes_attributes]["0"][:attachment])
+      redirect_to '/'
+    end
+    #office = Office.find(message_params[:office])
+    #@message.updates(message_params)
+    # @revision = Revision.new({
+    #   message: @message,
+    #   received_from: current_user.office.name,
+    #   sent_to: Office.find(message_params[:office]).name
+    #   })
+    # @revision.save!
+    # current_user.send_message(@office, "Some content", message_params[:subject])
   end
 
   # POST /messages
   # POST /messages.json
   def create
-    puts "Attachment!", message_params[:notes_attributes]["0"][:attachment]
     current_user.office.send_message(Office.find(message_params[:office]),
                               message_params[:notes_attributes]["0"][:content],
                               message_params[:subject],
@@ -111,7 +119,7 @@ class MessagesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def message_params
-    params.require(:message).permit(:office, :subject, notes_attributes: [:content, :attachment=>[]])
+    params.require(:message).permit(:office, :subject, notes_attributes: [:content, :attachment])
   end
 
   # def note_params
