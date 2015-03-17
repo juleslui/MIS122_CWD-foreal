@@ -6,7 +6,7 @@
 <p>
   Sender: <%= last_msg.sender.name %><br/>
   Latest Note: <%= last_msg.body %><br/>
-  Attachment: <%= last_msg.attachment.identifier %><br/>
+  Attachment: <%= link_to msg.attachment.identifier, msg.attachment.url %><br/>
 </p>
 
 <%= form_for(@message, url: reply_message_path(@convo)) do |f| %>
