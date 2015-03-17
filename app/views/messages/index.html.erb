@@ -26,7 +26,6 @@
       <th>Time Left</th>
     </tr>
     <%- @mailbox.inbox.each do |convo| %>
-      <%= convo %>
       <tr>
         <td><%= link_to convo.subject, message_path(convo.id) %></td>
         <td><%= convo.last_sender.name %></td>
