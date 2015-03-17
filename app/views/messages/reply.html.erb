@@ -16,7 +16,7 @@
   <br />
   <%= f.fields_for :notes, Note.new do |note| %>
     <%= note.label :attachment %>
-    <%= note.file_field :attachment, multiple: true %>
+    <%= note.file_field :attachment %>
     <br />
     <%= note.label "Note" %>
     <br />
