@@ -4,11 +4,15 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    if current_user.admin_check == true
-      @messages = Message.all
-    else
+    # if current_user.admin_check == true
+    #   @messages = Message.all
+    # else
       @messages = current_user.office.mailbox.inbox
-    end
+    # end
+  end
+
+  def history
+    @revisions = Message.find(params[:id]).revisions
   end
 
   def close
@@ -47,6 +51,12 @@ class MessagesController < ApplicationController
   def forward
     office = Office.find(message_params[:office])
     @message.updates(message_params)
+    @revision = Revision.new({
+      message: @message,
+      received_from: current_user.office.name,
+      sent_to: Office.find(message_params[:office]).name
+      })
+    @revision.save!
     current_user.send_message(@office, "Some content", message_params[:subject])
   end
 
@@ -54,51 +64,61 @@ class MessagesController < ApplicationController
   # POST /messages.json
   def create
     # puts "MEssage PArams:", message_params
-    office = Office.find(message_params[:office])
+    # office = Office.find(message_params[:office])
     # puts "Office:", office
-    puts message_params
-    puts "WHAT IS WRONG WITCHU", message_params[:attachment]
+    # puts message_params
+    # puts "WHAT IS WRONG WITCHU", message_params[:attachment]
 
-    @message = Message.new({
-      received_from: current_user.office.name,
-      office: Office.find(message_params[:office]), 
-      subject: message_params[:subject]
-    })
+    # @message = Message.new({
+    #   received_from: current_user.office.name,
+    #   office: Office.find(message_params[:office]), 
+    #   subject: message_params[:subject]
+    # })
 
     # uploader = AttacherUploader.new
     # uploader.store!(message_params[:attachment])
 
-    @note = Note.new(
-      {
-        user: current_user,
-        message: @message,
-        content: message_params[:notes_attributes]["0"][:content]
-      }
-    )
-    @note.save
+    # @note = Note.new(
+    #   {
+    #     user: current_user,
+    #     message: @message,
+    #     content: message_params[:notes_attributes]["0"][:content]
+    #   }
+    # )
+    # @note.save
 
+    # message_params[:notes_attributes]["0"][:attachment].each do |raw|
+    #   @attachment = Attachment.new({note: @note})
+    #   @attachment.file = raw
+    #   @attachment.save!
+    # end
+    
     message_params[:notes_attributes]["0"][:attachment].each do |raw|
-      @attachment = Attachment.new({note: @note})
+      @attachment = Attachment.new
       @attachment.file = raw
       @attachment.save!
     end
 
     @revision = Revision.new({
-      message: @message,
       received_from: current_user.office.name,
-      sent_to: Office.find(message_params[:office]).name
+      sent_to: Office.find.(message_params[:office]).name
+      attachment: @attachment
+      time_sent: Time.now
       })
 
-    current_user.send_message(office, "Some content", message_params[:subject])
-    respond_to do |format|
-      if @message.save
-        format.html { redirect_to '/', notice: 'Message was successfully created.' }
-        format.json { render :show, status: :created, location: @message }
-      else
-        format.html { render :new }
-        format.json { render json: @message.errors, status: :unprocessable_entity }
-      end
-    end
+    @revision.save!
+
+    current_user.send_message(Office.find(message_params[:office]), "Some content", message_params[:subject], true, @attachment, Time.now)
+    redirect_to '/'
+    # respond_to do |format|
+    #   if @message.save
+    #     format.html { redirect_to '/', notice: 'Message was successfully created.' }
+    #     format.json { render :show, status: :created, location: @message }
+    #   else
+    #     format.html { render :new }
+    #     format.json { render json: @message.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /messages/1

@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   get 'users/:id/disable' => 'users#disable', :as => 'disable_user'
   get 'users/:id/restore' => 'users#restore', :as => 'restore_user'
   get 'users/:id/terminate' => 'users#terminate', :as => 'terminate_user'
-  get 'messages/:id/history' => 'messages#history', :as => 'history_message'
+  get 'messages/:id/history' => 'messages#history', :as => 'message_history'
   match 'messages/:id/forward' => 'messages#forward', :as => 'forward_message', via: [:get, :post]
   get 'messages/:id/close' => 'messages#close', :as => 'close_message'
   get 'messages/:id/unclose' => 'messages#unclose', :as => 'unclose_message'

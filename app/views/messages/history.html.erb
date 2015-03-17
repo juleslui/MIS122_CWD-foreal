@@ -31,8 +31,7 @@
         <td><%= message.received_from %></td>
         <td><%= message.created_at %></td>
         <td><%= message.sent_to %></td>
-        <td>Time Elapsed here</td>
-        <td><%= link_to 'Delete', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= DateTime.now - message.created_at.to_datetime %></td>
       </tr>
       <% end %>
     </table>

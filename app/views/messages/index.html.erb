@@ -27,13 +27,16 @@
         <th>Subject</th>
       </tr>
       <% @messages.each do |message| %>
-      <tr>
-        <td>Countdown lang po dito ser</td>
-        <td><%= message.created_at %></td>
-        <td><%= message.received_from %></td>
-        <td><%= link_to message.subject, message %></td>
-        <td><%= link_to 'Delete', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+        <% @receipts = message.receipts %>
+          <% @receipts.each do |receipt| %> 
+            <tr>
+              <td>Countdown lang po dito ser</td>
+              <td><%= receipt.created_at %></td>
+              <td><%= receipt.message.sender.office.name %></td>
+              <td><%= receipt.message.subject %></td>
+              
+            </tr>
+          <% end %>
       <% end %>
     </table>
 
