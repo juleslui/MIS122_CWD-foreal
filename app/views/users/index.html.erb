@@ -11,18 +11,23 @@
   </li>
 
 <h1>Listing Users</h1>
-
-<table>
-  <thead>Active Users
+  <% @offices.each do |office| %>
+<table>  
+  <thead>
     <tr>
-      <th colspan="3"></th>
+      <th colspan="6"><%= office.name %></th>
+    </tr>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
     </tr>
   </thead>
 
   <tbody>
-      <% @okays.each do |user| %>
+      <% office.users.each do |user| %>
       <tr>
         <td><%= user.last_name %>, <%= user.first_name %></td>
+        <td><%=user.status %></td>
         <td><%= link_to 'Show', user %></td>
         <% if user.status == "OK" %>
         <td><%= link_to 'Disable', disable_user_path(user) %></td>
@@ -37,56 +42,8 @@
   </tbody>
 </table>
 <br />
-<table>
-  <thead>Disabled Users
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-      <% @disableds.each do |user| %>
-      <tr>
-        <td><%= user.last_name %>, <%= user.first_name %></td>
-        <td><%= link_to 'Show', user %></td>
-        <% if user.status == "OK" %>
-        <td><%= link_to 'Disable', disable_user_path(user) %></td>
-        <% end %>
-        <% if user.status == "DISABLED" %>
-        <td><%= link_to 'Restore', restore_user_path(user) %></td>
-        <% end %>
-        <td><%= link_to 'Terminate', terminate_user_path(user) %></td>
-        <td><%= link_to 'Delete', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-      <% end %>
-  </tbody>
-</table>
 <br />
-<table>
-  <thead>Terminated Users
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-      <% @terminateds.each do |user| %>
-      <tr>
-        <td><%= user.last_name %>, <%= user.first_name %></td>
-        <td><%= link_to 'Show', user %></td>
-        <% if user.status == "OK" %>
-        <td><%= link_to 'Disable', disable_user_path(user) %></td>
-        <% end %>
-        <% if user.status == "DISABLED" %>
-        <td><%= link_to 'Restore', restore_user_path(user) %></td>
-        <% end %>
-        <td><%= link_to 'Terminate', terminate_user_path(user) %></td>
-        <td><%= link_to 'Delete', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-      <% end %>
-  </tbody>
-</table>
-
+  <% end %>
 <br>
 
 <% if current_user.admin_check == true %>

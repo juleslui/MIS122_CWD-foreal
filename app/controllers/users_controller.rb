@@ -7,6 +7,7 @@ class UsersController < ApplicationController
     @disableds = @users.select { |user| user.status == 'DISABLED' }
     @okays = @users.select { |user| user.status == 'OK' }
     @terminateds = @users.select { |user| user.status == 'TERMINATED' }
+    @offices = Office.all
   end
 
   # GET /users/
