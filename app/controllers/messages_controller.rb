@@ -16,13 +16,13 @@ class MessagesController < ApplicationController
   end
 
   def close
-    @message = Message.find(params[:id])
+    @message = Mailboxer::Conversation.find(params[:id])
     @message.update_attribute(:status, "CLOSED")
     redirect_to @message
   end
 
   def unclose
-    @message = Message.find(params[:id])
+    @message = Mailboxer::Conversation.find(params[:id])
     @message.update_attribute(:status, "OPEN")
     redirect_to @message
   end
@@ -76,13 +76,14 @@ class MessagesController < ApplicationController
                               sanitize_text=true,
                               attachment=message_params[:notes_attributes]["0"][:attachment])
     # After sending message, track the revision
-    # @revision = Revision.new({
-    #   received_from: current_user.office.name,
-    #   sent_to: Office.find.(message_params[:office]).name,
-    #   attachment: @attachment,
-    #   time_sent: Time.now
-    #   })
-    # @revision.save!
+    @revision = Revision.new({
+      mailboxer_conversation_id: Mailboxer::Conversation.find_by_subject(message_params[:subject]),
+      received_from: current_user.office.name,
+      sent_to: Office.find(message_params[:office]).name,
+      attachment: @attachment,
+      time_sent: Time.now
+      })
+    @revision.save!
 
     redirect_to '/'
   end

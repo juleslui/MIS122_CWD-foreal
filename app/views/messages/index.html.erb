@@ -28,9 +28,9 @@
     <%- @mailbox.inbox.each do |convo| %>
       <tr>
         <td><%= link_to convo.subject, message_path(convo.id) %></td>
-        <td><%= convo.last_sender.name %></td>
+        <td><%= convo.last_sender.name.to_s %></td>
         <td><%= convo.created_at %></td>
-        <td>(Datetime Received + 24) - DatetimeNow</td>
+        <td><%= (convo.updated_at + 24) - convo.updated_at %></td>
       </tr>
     <% end %>
   </table>
@@ -46,9 +46,10 @@
     <%- @mailbox.sentbox.each do |convo| %>
       <tr>
         <td><%= link_to convo.subject, message_path(convo.id) %></td>
-        <td><%= convo.last_sender.name %></td>
+        <td><%= convo.last_sender.name.to_s %></td>
         <td><%= convo.created_at %></td>
-        <td>(Datetime Received + 24) - DatetimeNow</td>
+        <% @deadline = DateTime.now + 24 %>
+        <td><%= @deadline - DateTime.now %></td>
       </tr>
     <% end %>
   </table>
